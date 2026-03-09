@@ -1,0 +1,127 @@
+.compare-page {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.compare-header {
+  text-align: left;
+  margin-bottom: var(--spacing-2xl);
+}
+
+.compare-header h1 {
+  font-size: 2.25rem;
+  font-weight: var(--font-weight-bold);
+  margin-bottom: var(--spacing-xs);
+  color: var(--color-text-primary);
+}
+
+.compare-header p {
+  color: var(--color-text-secondary);
+  font-size: 1.125rem;
+}
+
+.comparison-grid {
+  display: grid;
+  gap: var(--spacing-xl);
+  width: 100%;
+  align-items: start;
+}
+
+.comparison-actions {
+  display: flex;
+  justify-content: center;
+  gap: var(--spacing-md);
+  margin-top: var(--spacing-xl);
+  padding: var(--spacing-md) 0;
+  border-top: 1px solid var(--color-border);
+  width: 100%;
+}
+
+.details-toggle-main, .verdict-btn {
+  font-weight: var(--font-weight-semibold);
+  letter-spacing: 0.02em;
+  padding: 0 var(--spacing-xl);
+}
+
+.verdict-btn {
+  background: linear-gradient(135deg, var(--color-accent) 0%, #0052a3 100%);
+  border: none;
+  transition: all 0.3s ease;
+}
+
+.verdict-btn:hover {
+  background: linear-gradient(135deg, #0052a3 0%, var(--color-accent) 100%);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 102, 204, 0.2);
+}
+
+.verdict-btn:active {
+  transform: translateY(1px);
+}
+
+@media (max-width: 768px) {
+  .details-toggle-main, .verdict-btn {
+    width: 100%;
+    margin: 0;
+    justify-content: center;
+  }
+}
+
+.details-toggle-main {
+  min-width: 320px;
+  box-shadow: var(--shadow-md);
+}
+
+.limit-reached-msg {
+  margin-top: var(--spacing-xl);
+  text-align: center;
+  color: var(--color-text-secondary);
+  font-size: 0.875rem;
+  padding: var(--spacing-md);
+  background-color: var(--color-surface);
+  border-radius: var(--radius-full);
+  display: inline-block;
+  align-self: center;
+  box-shadow: var(--shadow-sm);
+}
+
+@media (max-width: 1200px) {
+  .comparison-grid {
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)) !important;
+  }
+}
+
+@media (max-width: 768px) {
+  .compare-header {
+    text-align: center;
+  }
+  .compare-header h1 {
+    font-size: 2rem;
+  }
+  .comparison-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: var(--spacing-md);
+  }
+}
+
+@media (max-width: 481px) {
+  .compare-header h1 {
+    font-size: 1.75rem;
+  }
+  .comparison-grid {
+    gap: var(--spacing-sm) !important;
+  }
+  .compare-page {
+    padding: 0 var(--spacing-xs);
+  }
+}
+
+@media (max-width: 320px) {
+  .compare-header h1 {
+    font-size: 1.5rem;
+  }
+  .comparison-grid {
+    gap: var(--spacing-xs) !important;
+  }
+}

@@ -1,0 +1,200 @@
+.verdict-section {
+  width: 100%;
+  overflow: hidden; /* required for clean height animation */
+  margin-top: var(--spacing-xl);
+}
+
+.verdict-content {
+  background-color: var(--color-surface);
+  border-radius: var(--radius-xl);
+  border: 1px solid var(--color-border);
+  box-shadow: var(--shadow-sm);
+  display: flex;
+  flex-direction: column;
+}
+
+.verdict-header {
+  border-bottom: 1px solid var(--color-border);
+  padding: var(--spacing-lg) var(--spacing-xl);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.verdict-title {
+  font-size: 1.25rem;
+  font-weight: var(--font-weight-bold);
+  margin: 0;
+}
+
+.verdict-body {
+  padding: var(--spacing-xl);
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xl);
+}
+
+.winner-spotlight {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: var(--spacing-md);
+  padding: var(--spacing-xl);
+  background: linear-gradient(145deg, rgba(0, 102, 204, 0.05) 0%, rgba(0, 102, 204, 0) 100%);
+  border-radius: var(--radius-xl);
+  border: 1px solid rgba(0, 102, 204, 0.1);
+}
+
+.winner-badge {
+  font-size: 0.75rem;
+  font-weight: 800;
+  letter-spacing: 0.15em;
+  color: var(--color-accent);
+  background-color: rgba(0, 102, 204, 0.1);
+  padding: 4px 12px;
+  border-radius: 20px;
+  text-transform: uppercase;
+}
+
+.winner-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--spacing-md);
+  margin: var(--spacing-md) 0;
+}
+
+.winner-image-container {
+  width: 200px;
+  height: 200px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-xl);
+  background-color: var(--color-background);
+  padding: var(--spacing-md);
+  box-shadow: var(--shadow-sm);
+}
+
+.winner-image-container img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+}
+
+.winner-image-container.fallback {
+  background-color: var(--color-border);
+}
+
+.winner-details {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.winner-name {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--color-text-primary);
+  margin: 0;
+}
+
+.winner-brand {
+  font-size: 0.875rem;
+  color: var(--color-text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin: 0;
+}
+
+.verdict-explanation {
+  font-size: 1.05rem;
+  line-height: 1.6;
+  color: var(--color-text-primary);
+  margin-top: var(--spacing-lg);
+  padding: var(--spacing-xl);
+  background-color: var(--color-surface);
+  border-radius: var(--radius-lg);
+  border-left: 4px solid var(--color-accent);
+  text-align: left;
+  max-width: 800px; /* Readability cap */
+}
+
+.runner-up-section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+}
+
+.section-subtitle {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  font-size: 0.9rem;
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-secondary);
+  margin: 0;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.runner-up-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--spacing-lg) var(--spacing-xl);
+  background-color: var(--color-background);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  margin-bottom: var(--spacing-md);
+}
+
+.runner-up-info {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+}
+
+.ru-brand {
+  font-size: 0.75rem;
+  color: var(--color-text-secondary);
+  text-transform: uppercase;
+  font-weight: 500;
+}
+
+.ru-name {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--color-text-primary);
+}
+
+@media (max-width: 768px) {
+  .winner-image-container {
+    width: 160px;
+    height: 160px;
+  }
+  
+  .winner-spotlight {
+    padding: var(--spacing-lg);
+  }
+  
+  .verdict-explanation {
+    padding: var(--spacing-md);
+    font-size: 1rem;
+  }
+  
+  .verdict-header {
+    padding: var(--spacing-md) var(--spacing-lg);
+  }
+}
+
+/* Adjustments for dark mode if needed */
+[data-theme='dark'] .winner-spotlight {
+  background: linear-gradient(145deg, rgba(77, 166, 255, 0.1) 0%, rgba(77, 166, 255, 0) 100%);
+  border-color: rgba(77, 166, 255, 0.2);
+}
+
+[data-theme='dark'] .winner-badge {
+  background-color: rgba(77, 166, 255, 0.15);
+}

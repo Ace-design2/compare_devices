@@ -1,0 +1,66 @@
+.selection-card {
+  background-color: var(--color-surface);
+  border: 2px solid transparent;
+  border-radius: var(--radius-xl);
+  padding: var(--spacing-2xl);
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  box-shadow: var(--shadow-sm);
+  position: relative;
+  overflow: hidden;
+  min-height: 280px;
+  width: 100%;
+  max-width: 400px;
+  transition: box-shadow var(--transition-normal), border-color var(--transition-normal);
+}
+
+.selection-card:hover {
+  box-shadow: var(--shadow-lg);
+}
+
+.selection-card.selected {
+  border-color: var(--color-accent);
+  box-shadow: var(--shadow-md);
+  background-color: rgba(0, 102, 204, 0.02);
+}
+
+.card-icon {
+  margin-bottom: var(--spacing-lg);
+  color: var(--color-text-primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.selection-card.selected .card-icon {
+  color: var(--color-accent);
+}
+
+.card-title {
+  font-size: 1.5rem;
+  font-weight: var(--font-weight-semibold);
+  margin-bottom: var(--spacing-sm);
+  color: var(--color-text-primary);
+}
+
+.card-description {
+  font-size: 1rem;
+  color: var(--color-text-secondary);
+  /* max-width: 80%; */
+  line-height: 1.4;
+}
+
+@media (max-width: 768px) {
+  .selection-card {
+    min-height: 220px;
+    padding: var(--spacing-xl) var(--spacing-md);
+  }
+  
+  .card-title {
+    font-size: 1.25rem;
+  }
+}
