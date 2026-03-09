@@ -31,6 +31,8 @@
 .comparison-actions {
   display: flex;
   justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
   gap: var(--spacing-md);
   margin-top: var(--spacing-xl);
   padding: var(--spacing-md) 0;
@@ -41,7 +43,8 @@
 .details-toggle-main, .verdict-btn {
   font-weight: var(--font-weight-semibold);
   letter-spacing: 0.02em;
-  padding: 0 var(--spacing-xl);
+  padding: 0 var(--spacing-lg);
+  font-size: 0.95rem;
 }
 
 .verdict-btn {
@@ -61,16 +64,19 @@
 }
 
 @media (max-width: 768px) {
+  .comparison-actions {
+    flex-direction: column;
+  }
   .details-toggle-main, .verdict-btn {
     width: 100%;
     margin: 0;
     justify-content: center;
+    max-width: 350px; /* Don't stretch infinitely on tablets running column mode */
   }
 }
 
 .details-toggle-main {
-  min-width: 320px;
-  box-shadow: var(--shadow-md);
+  box-shadow: var(--shadow-sm);
 }
 
 .limit-reached-msg {

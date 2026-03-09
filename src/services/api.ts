@@ -1,6 +1,6 @@
 import type { DeviceData } from "../components/DeviceSlot";
 
-const API_BASE_URL = "http://localhost:5001";
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:5001";
 
 // Helper to safely extract and map backend backend structure to frontend format
 export const mapBackendDeviceToFrontend = (device: any): DeviceData => {

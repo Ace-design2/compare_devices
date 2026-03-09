@@ -192,7 +192,7 @@ const ComparePage = ({ initialDeviceIds }: ComparePageProps) => {
       {selectedDevices.length > 0 && (
         <div ref={actionsRef} className="comparison-actions">
           <Button 
-            size="lg" 
+            size="md" 
             variant="secondary"
             onClick={() => setShowDetails(!showDetails)}
             className="details-toggle-main"
@@ -203,7 +203,7 @@ const ComparePage = ({ initialDeviceIds }: ComparePageProps) => {
 
           {selectedDevices.length >= 2 && (
             <Button 
-              size="lg" 
+              size="md" 
               variant="primary"
               onClick={handleToggleVerdict}
               className="verdict-btn"
