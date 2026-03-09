@@ -14,14 +14,42 @@ export const mapBackendDeviceToFrontend = (device: any): DeviceData => {
   };
 };
 
+let memoryCache: DeviceData[] | null = null;
+const CACHE_KEY = "device_compare_app_devices_cache";
+
 // Fetch all devices (can be updated to handle query parameters later)
 export const fetchAllDevices = async (): Promise<DeviceData[]> => {
+  // 1. Check in-memory variable cache
+  if (memoryCache) return memoryCache;
+
+  // 2. Check browser sessionStorage
+  try {
+    const sessionCache = sessionStorage.getItem(CACHE_KEY);
+    if (sessionCache) {
+      memoryCache = JSON.parse(sessionCache);
+      return memoryCache!;
+    }
+  } catch (e) {
+    console.warn("Failed to read from session storage", e);
+  }
+
+  // 3. Fetch from API if not cached
   try {
     const response = await fetch(`${API_BASE_URL}/devices`);
     if (!response.ok) throw new Error("Network response was not ok");
 
     const data = await response.json();
-    return data.map(mapBackendDeviceToFrontend);
+    const mappedData = data.map(mapBackendDeviceToFrontend);
+    
+    // Save to caches for future requests
+    memoryCache = mappedData;
+    try {
+      sessionStorage.setItem(CACHE_KEY, JSON.stringify(mappedData));
+    } catch (e) {
+      console.warn("Failed to write to session storage", e);
+    }
+
+    return mappedData;
   } catch (error) {
     console.error("Error fetching all devices:", error);
     return [];
@@ -32,6 +60,12 @@ export const fetchAllDevices = async (): Promise<DeviceData[]> => {
 export const fetchSingleDevice = async (
   deviceId: string | number,
 ): Promise<DeviceData | null> => {
+  // Try to grab from cache first if we have it
+  if (memoryCache) {
+    const found = memoryCache.find(d => d.id === String(deviceId));
+    if (found) return found;
+  }
+
   try {
     const response = await fetch(`${API_BASE_URL}/devices/${deviceId}`);
 
@@ -53,6 +87,14 @@ export const fetchComparisonDevices = async (
   deviceIdsArray: (string | number)[],
 ): Promise<DeviceData[]> => {
   if (!deviceIdsArray || deviceIdsArray.length === 0) return [];
+
+  // Try to resolve entirely from cache if possible
+  if (memoryCache) {
+    const foundDevices = memoryCache.filter(d => deviceIdsArray.map(String).includes(String(d.id)));
+    if (foundDevices.length === deviceIdsArray.length) {
+      return foundDevices;
+    }
+  }
 
   try {
     const idsString = deviceIdsArray.join(",");
