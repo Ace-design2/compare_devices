@@ -1,8 +1,7 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Search, X } from 'lucide-react';
 import { type DeviceSearchItem } from '../services/api';
-import Input from './Input';
 import './DeviceSearchModal.css';
 
 interface DeviceSearchModalProps {
@@ -15,19 +14,25 @@ interface DeviceSearchModalProps {
 const DeviceSearchModal = ({ isOpen, onClose, onSelectDevice, availableDevices }: DeviceSearchModalProps) => {
   const [searchTerm, setSearchTerm] = useState('');
 
-  // Filter devices based on search term
+  // Sort and filter devices
   const filteredDevices = useMemo(() => {
-    if (!searchTerm.trim()) return availableDevices;
+    const sorted = [...availableDevices].sort((a, b) => {
+      const brandCompare = a.brand.localeCompare(b.brand);
+      if (brandCompare !== 0) return brandCompare;
+      return a.name.localeCompare(b.name);
+    });
+
+    if (!searchTerm.trim()) return sorted;
     
     const lowercasedSearch = searchTerm.toLowerCase();
-    return availableDevices.filter((device) => 
+    return sorted.filter((device) => 
       device.name.toLowerCase().includes(lowercasedSearch) ||
       device.brand.toLowerCase().includes(lowercasedSearch)
     );
   }, [availableDevices, searchTerm]);
 
   // Handle opening/closing reset
-  useMemo(() => {
+  useEffect(() => {
     if (isOpen) {
       setSearchTerm('');
     }
@@ -52,28 +57,33 @@ const DeviceSearchModal = ({ isOpen, onClose, onSelectDevice, availableDevices }
         >
           <motion.div 
             className="search-modal-container"
-            initial={{ scale: 0.95, opacity: 0, y: 20 }}
+            initial={{ scale: 0.9, opacity: 0, y: 40 }}
             animate={{ scale: 1, opacity: 1, y: 0 }}
-            exit={{ scale: 0.95, opacity: 0, y: 20 }}
-            transition={{ type: "spring", bounce: 0, duration: 0.3 }}
+            exit={{ scale: 0.9, opacity: 0, y: 40 }}
+            transition={{ type: "spring", damping: 25, stiffness: 300 }}
           >
             <div className="search-modal-header">
-              <h2>Select a Device</h2>
+              <div className="header-content">
+                <h2>Select a Device</h2>
+                <p className="header-subtitle">Choose from our curated collection</p>
+              </div>
               <button className="close-btn" onClick={onClose} aria-label="Close modal">
-                <X size={24} />
+                <X size={20} />
               </button>
             </div>
 
             <div className="search-input-wrapper">
-              <Search className="search-icon" size={20} />
-              <Input
-                autoFocus
-                type="text"
-                placeholder="Search by device name or brand..."
-                value={searchTerm}
-                onChange={(e: React.ChangeEvent<HTMLInputElement>) => setSearchTerm(e.target.value)}
-                className="search-input"
-              />
+              <div className="search-input-container">
+                <Search className="search-icon" size={18} />
+                <input
+                  autoFocus
+                  type="text"
+                  placeholder="Search devices..."
+                  value={searchTerm}
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => setSearchTerm(e.target.value)}
+                  className="search-input-field"
+                />
+              </div>
             </div>
 
             <div className="search-results-list">
@@ -83,16 +93,21 @@ const DeviceSearchModal = ({ isOpen, onClose, onSelectDevice, availableDevices }
                     key={device.id}
                     className="search-result-item"
                     onClick={() => onSelectDevice(device)}
-                    whileHover={{ scale: 1.01, backgroundColor: 'rgba(255, 255, 255, 0.05)' }}
-                    whileTap={{ scale: 0.99 }}
+                    whileHover={{ x: 4 }}
+                    whileTap={{ scale: 0.995 }}
                   >
-                    <div className="result-brand">{device.brand}</div>
-                    <div className="result-name">{device.name}</div>
+                    <div className="result-info">
+                      <span className="result-brand">{device.brand}</span>
+                      <span className="result-name">{device.name}</span>
+                    </div>
+                    <div className="result-action">
+                      <span className="select-text">Select</span>
+                    </div>
                   </motion.div>
                 ))
               ) : (
                 <div className="no-results-message">
-                  No devices found matching "{searchTerm}"
+                  <p>No devices found matching "{searchTerm}"</p>
                 </div>
               )}
             </div>
