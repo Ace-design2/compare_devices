@@ -23,8 +23,8 @@ export const mapBackendDeviceToFrontend = (device: any): DeviceData => {
 
 let memoryCache: DeviceData[] | null = null;
 let searchCache: DeviceSearchItem[] | null = null;
-const CACHE_KEY = "device_compare_app_devices_cache_v2";
-const SEARCH_CACHE_KEY = "device_compare_app_search_cache_v1";
+const CACHE_KEY = "device_compare_app_devices_cache_v3";
+const SEARCH_CACHE_KEY = "device_compare_app_search_cache_v2";
 
 // Fetch minimal info for all devices for search
 export const fetchDeviceSearchData = async (): Promise<DeviceSearchItem[]> => {
@@ -42,7 +42,7 @@ export const fetchDeviceSearchData = async (): Promise<DeviceSearchItem[]> => {
 
   try {
     // Attempt to fetch minimal fields if backend supports it, otherwise fetch full and filter
-    const response = await fetch(`${API_BASE_URL}/devices?limit=5000&fields=id,phone_model,phone_brand`);
+    const response = await fetch(`${API_BASE_URL}/devices?fields=id,phone_model,phone_brand`);
     if (!response.ok) throw new Error("Network response was not ok");
 
     const data = await response.json();
@@ -84,7 +84,7 @@ export const fetchAllDevices = async (): Promise<DeviceData[]> => {
   }
 
   try {
-    const response = await fetch(`${API_BASE_URL}/devices?limit=5000`);
+    const response = await fetch(`${API_BASE_URL}/devices`);
     if (!response.ok) throw new Error("Network response was not ok");
 
     const data = await response.json();
