@@ -5,7 +5,7 @@ import DeviceSlot, { type DeviceData } from '../components/DeviceSlot';
 import DeviceSearchModal from '../components/DeviceSearchModal';
 import Button from '../components/Button';
 import VerdictSection from '../components/VerdictSection';
-import { fetchAllDevices } from '../services/api';
+import { fetchDeviceSearchData, fetchSingleDevice, fetchComparisonDevices, type DeviceSearchItem } from '../services/api';
 import { calculateVerdict, type VerdictResult } from '../utils/compareLogic';
 import { Trophy } from 'lucide-react';
 import './ComparePage.css';
@@ -17,9 +17,10 @@ interface ComparePageProps {
 }
 
 const ComparePage = ({ initialDeviceIds }: ComparePageProps) => {
-  const [allDevices, setAllDevices] = useState<DeviceData[]>([]);
+  const [allSearchDevices, setAllSearchDevices] = useState<DeviceSearchItem[]>([]);
   const [selectedDevices, setSelectedDevices] = useState<DeviceData[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
+  const [isAddingDevice, setIsAddingDevice] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
   const [showDetails, setShowDetails] = useState(!!initialDeviceIds && initialDeviceIds.length === 1);
   const [isMobile, setIsMobile] = useState(false);
@@ -33,22 +34,25 @@ const ComparePage = ({ initialDeviceIds }: ComparePageProps) => {
   
   // Fetch initial devices on component mount
   useEffect(() => {
-    const loadDevices = async () => {
+    const loadInitialData = async () => {
       setLoading(true);
       setError(null);
       try {
-        const devices = await fetchAllDevices();
-        setAllDevices(devices);
+        // 1. Fetch minimal names for search list (5000 devices)
+        const searchItems = await fetchDeviceSearchData();
+        setAllSearchDevices(searchItems);
         
-        // Default device IDs requested by USER or from props
+        // 2. Fetch full details for initial comparison devices
         const defaultIds = initialDeviceIds || [8792, 8623]; // iPhone 16 Pro Max and S23 Ultra
-        const defaultDevices = devices.filter(d => defaultIds.includes(Number(d.id)));
+        const initialFullDevices = await fetchComparisonDevices(defaultIds);
         
-        if (defaultDevices.length > 0) {
-          setSelectedDevices(defaultDevices);
-        } else if (devices.length > 0) {
-          // Fallback to first 2 if defaults aren't found for some reason
-          setSelectedDevices(devices.slice(0, Math.min(2, devices.length)));
+        if (initialFullDevices.length > 0) {
+          setSelectedDevices(initialFullDevices);
+        } else if (searchItems.length > 0) {
+          // Fallback: fetch first 2 if defaults aren't found
+          const firstTwoIds = searchItems.slice(0, 2).map(item => item.id);
+          const fallbackDevices = await fetchComparisonDevices(firstTwoIds);
+          setSelectedDevices(fallbackDevices);
         }
       } catch (err) {
         setError("Failed to load devices");
@@ -57,7 +61,7 @@ const ComparePage = ({ initialDeviceIds }: ComparePageProps) => {
       }
     };
 
-    loadDevices();
+    loadInitialData();
     
     // Evaluate mobile layout constraint
     const mediaQuery = window.matchMedia('(max-width: 767px)');
@@ -86,10 +90,23 @@ const ComparePage = ({ initialDeviceIds }: ComparePageProps) => {
     setIsSearchModalOpen(true);
   };
   
-  const handleSelectDevice = (device: DeviceData) => {
+  const handleSelectDevice = async (searchItem: DeviceSearchItem) => {
     if (selectedDevices.length >= MAX_DEVICES) return;
-    setSelectedDevices(prev => [...prev, device]);
+    
+    setIsAddingDevice(true);
     setIsSearchModalOpen(false);
+    
+    try {
+      // Fetch full details for the selected device on-demand
+      const fullDevice = await fetchSingleDevice(searchItem.id);
+      if (fullDevice) {
+        setSelectedDevices(prev => [...prev, fullDevice]);
+      }
+    } catch (err) {
+      console.error("Failed to load full device details", err);
+    } finally {
+      setIsAddingDevice(false);
+    }
   };
 
   const handleToggleVerdict = () => {
@@ -108,12 +125,11 @@ const ComparePage = ({ initialDeviceIds }: ComparePageProps) => {
     }
   };
 
-  // Filter out devices already selected for the modal
   const availableDevices = useMemo(() => {
-    return allDevices.filter(
-      device => !selectedDevices.some(selected => selected.id === device.id)
+    return allSearchDevices.filter(
+      (item: DeviceSearchItem) => !selectedDevices.some(selected => selected.id === item.id)
     );
-  }, [allDevices, selectedDevices]);
+  }, [allSearchDevices, selectedDevices]);
 
   const effectiveMaxDevices = isMobile ? 2 : MAX_DEVICES;
   const displayedDevices = isMobile ? selectedDevices.slice(0, effectiveMaxDevices) : selectedDevices;
@@ -175,7 +191,7 @@ const ComparePage = ({ initialDeviceIds }: ComparePageProps) => {
             />
           ))}
           
-          {showAddSlot && (
+          {showAddSlot && !isAddingDevice && (
             <motion.div
               layout
               initial={{ opacity: 0, scale: 0.9 }}
@@ -184,6 +200,20 @@ const ComparePage = ({ initialDeviceIds }: ComparePageProps) => {
               key="add-slot"
             >
               <DeviceSlot onAddPlaceholder={handleAddDeviceClick} />
+            </motion.div>
+          )}
+
+          {isAddingDevice && (
+             <motion.div
+              layout
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              key="loading-slot"
+              className="device-slot placeholder loading"
+              style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--color-text-secondary)' }}
+            >
+              <span>Loading details...</span>
             </motion.div>
           )}
         </AnimatePresence>

@@ -2,6 +2,13 @@ import type { DeviceData } from "../components/DeviceSlot";
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:5001";
 
+// Basic device info for search results
+export interface DeviceSearchItem {
+  id: string;
+  name: string;
+  brand: string;
+}
+
 // Helper to safely extract and map backend backend structure to frontend format
 export const mapBackendDeviceToFrontend = (device: any): DeviceData => {
   return {
@@ -15,14 +22,57 @@ export const mapBackendDeviceToFrontend = (device: any): DeviceData => {
 };
 
 let memoryCache: DeviceData[] | null = null;
+let searchCache: DeviceSearchItem[] | null = null;
 const CACHE_KEY = "device_compare_app_devices_cache_v2";
+const SEARCH_CACHE_KEY = "device_compare_app_search_cache_v1";
 
-// Fetch all devices (can be updated to handle query parameters later)
+// Fetch minimal info for all devices for search
+export const fetchDeviceSearchData = async (): Promise<DeviceSearchItem[]> => {
+  if (searchCache) return searchCache;
+
+  try {
+    const sessionCache = sessionStorage.getItem(SEARCH_CACHE_KEY);
+    if (sessionCache) {
+      searchCache = JSON.parse(sessionCache);
+      return searchCache!;
+    }
+  } catch (e) {
+    console.warn("Failed to read search cache", e);
+  }
+
+  try {
+    // Attempt to fetch minimal fields if backend supports it, otherwise fetch full and filter
+    const response = await fetch(`${API_BASE_URL}/devices?limit=5000&fields=id,phone_model,phone_brand`);
+    if (!response.ok) throw new Error("Network response was not ok");
+
+    const data = await response.json();
+    const mappedData: DeviceSearchItem[] = data.map((device: any) => ({
+      id: String(device.id),
+      name: device.phone_model || device.model || "Unknown Model",
+      brand: device.phone_brand || device.brand || "Unknown Brand",
+    }));
+
+    searchCache = mappedData;
+    try {
+      sessionStorage.setItem(SEARCH_CACHE_KEY, JSON.stringify(mappedData));
+    } catch (e) {
+      console.warn("Failed to write search cache", e);
+    }
+
+    return mappedData;
+  } catch (error) {
+    console.error("Error fetching search data:", error);
+    return [];
+  }
+};
+
+// Fetch all devices (retaining for backward compatibility if needed, but optimized)
 export const fetchAllDevices = async (): Promise<DeviceData[]> => {
-  // 1. Check in-memory variable cache
+  // If we already have full devices cached, use them
   if (memoryCache) return memoryCache;
 
-  // 2. Check browser sessionStorage
+  // Otherwise, we might want to avoid fetching 5000 full specs at once.
+  // For now, let's keep the existing logic but recognize it might be heavy.
   try {
     const sessionCache = sessionStorage.getItem(CACHE_KEY);
     if (sessionCache) {
@@ -33,7 +83,6 @@ export const fetchAllDevices = async (): Promise<DeviceData[]> => {
     console.warn("Failed to read from session storage", e);
   }
 
-  // 3. Fetch from API if not cached
   try {
     const response = await fetch(`${API_BASE_URL}/devices?limit=5000`);
     if (!response.ok) throw new Error("Network response was not ok");
@@ -41,7 +90,6 @@ export const fetchAllDevices = async (): Promise<DeviceData[]> => {
     const data = await response.json();
     const mappedData = data.map(mapBackendDeviceToFrontend);
     
-    // Save to caches for future requests
     memoryCache = mappedData;
     try {
       sessionStorage.setItem(CACHE_KEY, JSON.stringify(mappedData));

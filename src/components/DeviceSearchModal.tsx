@@ -1,15 +1,15 @@
 import { useState, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Search, X } from 'lucide-react';
-import { type DeviceData } from './DeviceSlot';
+import { type DeviceSearchItem } from '../services/api';
 import Input from './Input';
 import './DeviceSearchModal.css';
 
 interface DeviceSearchModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onSelectDevice: (device: DeviceData) => void;
-  availableDevices: DeviceData[];
+  onSelectDevice: (item: DeviceSearchItem) => void;
+  availableDevices: DeviceSearchItem[];
 }
 
 const DeviceSearchModal = ({ isOpen, onClose, onSelectDevice, availableDevices }: DeviceSearchModalProps) => {
@@ -71,7 +71,7 @@ const DeviceSearchModal = ({ isOpen, onClose, onSelectDevice, availableDevices }
                 type="text"
                 placeholder="Search by device name or brand..."
                 value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) => setSearchTerm(e.target.value)}
                 className="search-input"
               />
             </div>
