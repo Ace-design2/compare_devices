@@ -35,7 +35,7 @@ export const fetchAllDevices = async (): Promise<DeviceData[]> => {
 
   // 3. Fetch from API if not cached
   try {
-    const response = await fetch(`${API_BASE_URL}/devices?limit=1000`);
+    const response = await fetch(`${API_BASE_URL}/devices?limit=5000`);
     if (!response.ok) throw new Error("Network response was not ok");
 
     const data = await response.json();
