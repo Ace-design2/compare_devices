@@ -15,7 +15,7 @@ export const mapBackendDeviceToFrontend = (device: any): DeviceData => {
 };
 
 let memoryCache: DeviceData[] | null = null;
-const CACHE_KEY = "device_compare_app_devices_cache";
+const CACHE_KEY = "device_compare_app_devices_cache_v2";
 
 // Fetch all devices (can be updated to handle query parameters later)
 export const fetchAllDevices = async (): Promise<DeviceData[]> => {
