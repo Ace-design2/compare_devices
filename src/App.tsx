@@ -13,12 +13,17 @@ function App() {
   return (
     <div className="app-container">
       <header>
-        <div
-          className="logo"
-          onClick={() => setCurrentPage("landing")}
-          style={{ cursor: "pointer" }}
-        >
-          DeviceTech
+        <div className="header-content-inner">
+          <div
+            className="logo"
+            onClick={() => setCurrentPage("landing")}
+            style={{ cursor: "pointer" }}
+          >
+            DeviceTech
+          </div>
+          <a href="mailto:showunmioluwasegun135@gmail.com" className="contact-btn">
+            Contact Developer
+          </a>
         </div>
       </header>
 
