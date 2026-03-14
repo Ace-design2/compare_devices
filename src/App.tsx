@@ -3,6 +3,7 @@ import "./App.css";
 import LandingPage from "./pages/LandingPage";
 import ComparePage from "./pages/ComparePage";
 import RecommendPage from "./pages/RecommendPage";
+import ContactTooltip from "./components/ContactTooltip";
 
 export type PageState = "landing" | "compare" | "recommend";
 
@@ -21,9 +22,7 @@ function App() {
           >
             DeviceTech
           </div>
-          <a href="mailto:showunmioluwasegun135@gmail.com" className="contact-btn">
-            Contact Developer
-          </a>
+          <ContactTooltip />
         </div>
       </header>
 

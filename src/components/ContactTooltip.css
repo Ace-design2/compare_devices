@@ -1,0 +1,104 @@
+.contact-tooltip-container {
+  position: relative;
+  display: inline-block;
+}
+
+.contact-btn {
+  padding: 8px 16px;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-full);
+  font-size: 14px;
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-primary);
+  transition: all var(--transition-normal);
+  white-space: nowrap;
+}
+
+.contact-btn:hover, .contact-btn.active {
+  border-color: var(--color-accent);
+  color: var(--color-accent);
+  background: rgba(0, 102, 204, 0.05);
+}
+
+.tooltip-content {
+  position: absolute;
+  top: calc(100% + 12px);
+  right: 0;
+  width: 180px;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-lg);
+  z-index: 1000;
+  overflow: visible;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+.tooltip-arrow {
+  position: absolute;
+  top: -6px;
+  right: 24px;
+  width: 12px;
+  height: 12px;
+  background: var(--color-surface);
+  border-left: 1px solid var(--color-border);
+  border-top: 1px solid var(--color-border);
+  transform: rotate(45deg);
+  z-index: -1;
+}
+
+.tooltip-inner {
+  padding: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.contact-option {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 12px;
+  border-radius: var(--radius-sm);
+  transition: all var(--transition-fast);
+  color: var(--color-text-primary);
+  text-decoration: none;
+}
+
+.contact-option:hover {
+  background: rgba(0, 0, 0, 0.03);
+  transform: translateX(4px);
+}
+
+@media (prefers-color-scheme: dark) {
+  .contact-option:hover {
+    background: rgba(255, 255, 255, 0.05);
+  }
+  
+  .tooltip-content {
+    background: rgba(28, 28, 30, 0.85);
+  }
+  
+  .tooltip-arrow {
+    background: rgba(28, 28, 30, 0.85);
+  }
+}
+
+.icon-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-text-secondary);
+  transition: color var(--transition-fast);
+}
+
+.contact-option:hover .icon-wrapper {
+  color: var(--hover-color);
+}
+
+.option-name {
+  font-size: 14px;
+  font-weight: var(--font-weight-medium);
+}
