@@ -56,7 +56,6 @@ const ContactTooltip: React.FC = () => {
       <button 
         className={`contact-btn ${isOpen ? 'active' : ''}`}
         onClick={() => setIsOpen(!isOpen)}
-        onMouseEnter={() => setIsOpen(true)}
       >
         Contact Developer
       </button>
@@ -69,7 +68,6 @@ const ContactTooltip: React.FC = () => {
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 10, scale: 0.95 }}
             transition={{ duration: 0.2, ease: "easeOut" }}
-            onMouseLeave={() => setIsOpen(false)}
           >
             <div className="tooltip-arrow" />
             <div className="tooltip-inner">
